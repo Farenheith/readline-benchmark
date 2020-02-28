@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "node --expose-gc index"
+    "start": "node --expose-gc index",
+    "naive": "node --expose-gc index2"
   },
   "repository": {
     "type": "git",
