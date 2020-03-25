@@ -4,7 +4,8 @@
   "description": "",
   "scripts": {
     "start": "node --expose-gc index",
-    "naive": "node --expose-gc index2"
+    "naive": "node --expose-gc index2",
+    "generators": "node --expose-gc index3"
   },
   "repository": {
     "type": "git",
