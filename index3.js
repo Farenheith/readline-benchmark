@@ -1,6 +1,5 @@
 const fs = require('fs');
 const NaiveReadline = require('./NaiveReadline');
-const NaiveReadline2 = require('./NaiveReadline2');
 const runProfiling = require('./runProfiling');
 
 const lineEnding = /\r?\n|\r(?!\n)/;
@@ -42,8 +41,26 @@ const lineEnding = /\r?\n|\r(?!\n)/;
     console.log(`Read ${i} lines`);
   });
 
-  await runProfiling('naive readline2 async iteration via array of lines', async () => {
+  await runProfiling('naive readline2 async iteration via yield* array of lines', async () => {
     async function* readline2(stream) {
+      let buffer = '';
+      for await (let chunk of stream) {
+        chunk = buffer + chunk;
+        const lines = chunk.split(lineEnding);
+        buffer = lines.pop();
+        yield* lines;
+      }
+    }
+
+    let i = 0;
+    for await (const lines of readline2(fs.createReadStream('big.txt'))) {
+      i += 1;
+    }
+    console.log(`Read ${i} lines`);
+  });
+
+  await runProfiling('naive readline3 async iteration via array of lines', async () => {
+    async function* readline3(stream) {
       let buffer = '';
       for await (let chunk of stream) {
         chunk = buffer + chunk;
@@ -54,7 +71,7 @@ const lineEnding = /\r?\n|\r(?!\n)/;
     }
 
     let i = 0;
-    for await (const lines of readline2(fs.createReadStream('big.txt'))) {
+    for await (const lines of readline3(fs.createReadStream('big.txt'))) {
       for (const line of lines) {
         i += 1;
       }
@@ -62,8 +79,8 @@ const lineEnding = /\r?\n|\r(?!\n)/;
     console.log(`Read ${i} lines`);
   });
 
-  await runProfiling('naive readline3 async iteration via an iterator', async () => {
-    async function readline3(stream, iterator) {
+  await runProfiling('naive readline4 async iteration via an iterator', async () => {
+    async function readline4(stream, iterator) {
       let buffer = '';
       for await (let chunk of stream) {
         chunk = buffer + chunk;
@@ -76,7 +93,7 @@ const lineEnding = /\r?\n|\r(?!\n)/;
     }
 
     let i = 0;
-    await readline3(fs.createReadStream('big.txt'), line => {
+    await readline4(fs.createReadStream('big.txt'), line => {
       i += 1;
     })
 
