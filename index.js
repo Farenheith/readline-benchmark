@@ -66,7 +66,7 @@ const { augmentativeForEachAsync } = require('augmentative-iterable');
     }
     let string = this._decoder.write(b);
     if (this._sawReturnAt &&
-        DateNow() - this._sawReturnAt <= this.crlfDelay) {
+        Date.now() - this._sawReturnAt <= this.crlfDelay) {
       string = string.replace(/^\n/, '');
       this._sawReturnAt = 0;
     }
@@ -79,7 +79,7 @@ const { augmentativeForEachAsync } = require('augmentative-iterable');
       this._line_buffer = null;
     }
     if (newPartContainsEnding) {
-      this._sawReturnAt = string.endsWith('\r') ? DateNow() : 0;
+      this._sawReturnAt = string.endsWith('\r') ? Date.now() : 0;
 
       // Got one or more newlines; process into "line" events
       const lines = string.split(lineEnding);
