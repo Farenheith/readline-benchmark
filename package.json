@@ -17,5 +17,9 @@
   "bugs": {
     "url": "https://github.com/alubbe/readline-benchmark/issues"
   },
-  "homepage": "https://github.com/alubbe/readline-benchmark#readme"
+  "homepage": "https://github.com/alubbe/readline-benchmark#readme",
+  "dependencies": {
+    "augmentative-iterable": "^1.5.0",
+    "faster-readline-iterator": "^0.0.3"
+  }
 }

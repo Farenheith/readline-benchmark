@@ -1,6 +1,8 @@
 const fs = require('fs');
 const readline = require('readline');
 const runProfiling = require('./runProfiling');
+const { getReadlineIterable } = require('faster-readline-iterator');
+const { augmentativeForEachAsync } = require('augmentative-iterable');
 
 (async () => {
   await runProfiling('readline stream interface', () => new Promise((resolve, reject) => {
@@ -30,6 +32,28 @@ const runProfiling = require('./runProfiling');
       for await (const line of rl) {
         i += 1;
       }
+      console.log(`Read ${i} lines`);
+  });
+
+  await runProfiling('faster readline async iteration', async () => {
+    const rl = readline.createInterface({
+        input: fs.createReadStream('big.txt'),
+      });
+
+      let i = 0;
+      for await (const line of getReadlineIterable(rl)) {
+        i += 1;
+      }
+      console.log(`Read ${i} lines`);
+  });
+
+  await runProfiling('faster readline async augmentative iteration', async () => {
+    const rl = readline.createInterface({
+        input: fs.createReadStream('big.txt'),
+      });
+
+      let i = 0;
+      await augmentativeForEachAsync.call(getReadlineIterable(rl), () => i += 1);
       console.log(`Read ${i} lines`);
   });
 
